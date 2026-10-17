@@ -1,0 +1,19 @@
+@if (showTabs()) {
+  <nav class="tabs" aria-label="Main">
+    <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">
+      <app-icon name="layout-dashboard" />Overview
+    </a>
+    <a routerLink="/activity" routerLinkActive="on"> <app-icon name="list" />Activity </a>
+    <a routerLink="/accounts" routerLinkActive="on"> <app-icon name="wallet-cards" />Accounts </a>
+  </nav>
+}
+
+<main [class.with-tabs]="showTabs()">
+  @if (status.updateReady()) {
+    <div class="update" role="status">
+      A new version is ready.
+      <button type="button" class="link" (click)="reload()">Reload</button>
+    </div>
+  }
+  <router-outlet />
+</main>

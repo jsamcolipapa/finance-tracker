@@ -1,0 +1,60 @@
+<app-back-link to="/settings" />
+
+<p class="eyebrow">EXPORT BACKUP</p>
+<h1>Keep a safe copy</h1>
+<p class="subtitle">Save the backup in a place you can find again, such as Files.</p>
+
+<div class="file-card">
+  <app-icon name="file-json" [size]="22" />
+  <span>
+    <strong>{{ filename }}</strong>
+    <small>{{ summary() }}</small>
+  </span>
+</div>
+
+<form class="form" (ngSubmit)="save()">
+  <label>
+    Passphrase <span class="hint">(optional)</span>
+    <input
+      class="input"
+      type="password"
+      name="passphrase"
+      autocomplete="new-password"
+      [ngModel]="passphrase()"
+      (ngModelChange)="passphrase.set($event)"
+    />
+  </label>
+  @if (passphrase()) {
+    <label>
+      Confirm passphrase
+      <input
+        class="input"
+        type="password"
+        name="confirmation"
+        autocomplete="new-password"
+        [ngModel]="confirmation()"
+        (ngModelChange)="confirmation.set($event)"
+      />
+    </label>
+  }
+
+  <div class="info-panel" style="margin-top: 0">
+    <app-icon name="lock-keyhole" />
+    <span>
+      A passphrase encrypts the backup on this device before it's saved. You'll need it to restore —
+      it can't be recovered if forgotten.
+    </span>
+  </div>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="actions" style="margin-top: 6px">
+    <button class="btn" type="submit" [disabled]="busy()">
+      <app-icon name="download" [size]="16" />
+      {{ busy() ? 'Preparing…' : 'Save backup' }}
+    </button>
+    <a class="btn secondary" routerLink="/settings">Cancel</a>
+  </div>
+</form>

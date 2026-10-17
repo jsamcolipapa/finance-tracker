@@ -1,0 +1,74 @@
+<app-back-link to="/settings" />
+
+<p class="eyebrow">RESTORE BACKUP</p>
+<h1>Review before restoring</h1>
+<p class="subtitle">Choose a backup file, then confirm the records it contains.</p>
+
+<label class="file-card" style="cursor: pointer">
+  <app-icon name="file-json" [size]="22" />
+  <span>
+    <strong>{{ fileName() || 'Choose a backup file' }}</strong>
+    <small>{{ fileName() ? 'Tap to choose a different file' : 'stillwater-backup-….json' }}</small>
+  </span>
+  <input
+    class="visually-hidden"
+    type="file"
+    accept="application/json,.json"
+    (change)="choose($event)"
+  />
+</label>
+
+@if (envelope()) {
+  <form class="form" (ngSubmit)="unlock()">
+    <label>
+      Backup passphrase
+      <input
+        class="input"
+        type="password"
+        name="passphrase"
+        autocomplete="current-password"
+        [ngModel]="passphrase()"
+        (ngModelChange)="passphrase.set($event)"
+      />
+    </label>
+    <button class="btn" type="submit" [disabled]="busy() || !passphrase()">
+      <app-icon name="lock-keyhole" [size]="16" />
+      {{ busy() ? 'Unlocking…' : 'Unlock backup' }}
+    </button>
+  </form>
+}
+
+@if (selected(); as backup) {
+  <div class="detail-card">
+    <div class="detail-row">
+      <span>Accounts</span><strong>{{ backup.accounts.length }}</strong>
+    </div>
+    <div class="detail-row">
+      <span>Transactions</span><strong>{{ backup.transactions.length }}</strong>
+    </div>
+    <div class="detail-row">
+      <span>Backup created</span><strong>{{ createdAt() }}</strong>
+    </div>
+  </div>
+}
+
+@if (error()) {
+  <p class="error mt" role="alert">{{ error() }}</p>
+}
+
+@if (hasLocalData()) {
+  <div class="info-panel">
+    <app-icon name="triangle-alert" />
+    <span>
+      Restoring replaces the records currently on this device.
+      <a routerLink="/settings/export">Export a fresh backup</a> first.
+    </span>
+  </div>
+}
+
+<div class="actions">
+  <button class="btn" type="button" [disabled]="!selected() || busy()" (click)="restore()">
+    Restore this backup
+  </button>
+  <a class="btn secondary" routerLink="/settings">Cancel</a>
+</div>

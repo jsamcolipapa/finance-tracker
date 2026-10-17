@@ -1,0 +1,68 @@
+.art {
+  display: grid;
+  place-items: center;
+  height: 170px;
+  margin: 0 0 28px;
+  border-radius: 19px;
+  background: var(--soft);
+}
+
+.circle {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: var(--deep);
+  color: var(--deep-text);
+  box-shadow: 0 0 0 18px color-mix(in srgb, var(--deep) 14%, var(--soft));
+}
+
+.intro {
+  margin: 10px 0 24px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 14px 0;
+
+  strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  small {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--deep);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.actions {
+  margin-top: 30px;
+}
+
+.note {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}

@@ -1,0 +1,36 @@
+<app-brandline />
+
+<div class="art" aria-hidden="true">
+  <div class="circle">
+    <svg viewBox="0 0 24 24" width="62" height="62">
+      <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+      <path d="M3.5 12a8.5 8.5 0 0 0 17 0z" fill="currentColor" />
+    </svg>
+  </div>
+</div>
+
+<p class="eyebrow">MONEY, MADE CLEAR</p>
+<h1>Know what you have, wherever you are.</h1>
+<p class="subtitle intro">Track the money left in each account, even without internet.</p>
+
+@for (step of steps; track step.title; let i = $index) {
+  <div class="step">
+    <span class="num">{{ i + 1 }}</span>
+    <span>
+      <strong>{{ step.title }}</strong>
+      <small>{{ step.text }}</small>
+    </span>
+  </div>
+}
+
+<div class="actions">
+  @if (returning()) {
+    <a class="btn" routerLink="/">Back to overview <app-icon name="arrow-right" [size]="16" /></a>
+  } @else {
+    <a class="btn" routerLink="/accounts/new">
+      Set up my accounts <app-icon name="arrow-right" [size]="16" />
+    </a>
+    <a class="btn secondary" routerLink="/settings/restore">Restore from a backup</a>
+  }
+</div>
+<p class="note">Your records stay on this device. Nothing is sent anywhere.</p>

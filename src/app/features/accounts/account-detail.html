@@ -1,0 +1,61 @@
+<app-back-link to="/accounts" />
+
+@if (account(); as account) {
+  <div class="title-row">
+    <div>
+      <p class="eyebrow">
+        {{ typeLabels[account.type].toUpperCase() }} · {{ account.currency }}
+        @if (account.archived) {
+          · ARCHIVED
+        }
+      </p>
+      <h1>{{ account.name }}</h1>
+    </div>
+    <a class="icon-btn" [routerLink]="['/accounts', account.id, 'edit']" aria-label="Edit account">
+      <app-icon name="pencil" />
+    </a>
+  </div>
+
+  <div class="hero">
+    <span class="label">{{ balance() < 0 ? 'Balance owed' : 'Available balance' }}</span>
+    <strong class="amount">{{ format(balance(), account.currency) }}</strong>
+    <span class="sub"
+      >Starting balance {{ format(account.startingBalanceMinor, account.currency) }}</span
+    >
+  </div>
+
+  <div class="detail-card">
+    <div class="detail-row">
+      <span>Account type</span><strong>{{ typeLabels[account.type] }}</strong>
+    </div>
+    <div class="detail-row">
+      <span>Currency</span><strong>{{ account.currency }}</strong>
+    </div>
+    <div class="detail-row">
+      <span>Tracking since</span><strong>{{ trackingSince() }}</strong>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <h2>Recent activity</h2>
+    <a class="link" routerLink="/activity" [queryParams]="{ account: account.id }">See all ›</a>
+  </div>
+  @if (recent().length) {
+    <div class="list">
+      @for (view of recent(); track view.txn.id) {
+        <app-txn-row [view]="view" />
+      }
+    </div>
+  } @else {
+    <div class="empty">No transactions for this account yet.</div>
+  }
+
+  @if (!account.archived) {
+    <a class="btn mt" routerLink="/activity/new" [queryParams]="{ account: account.id }">
+      <app-icon name="plus" [size]="16" /> Record transaction
+    </a>
+  }
+} @else if (finance.loaded()) {
+  <h1>Account not found</h1>
+  <p class="subtitle">It may have been deleted, or replaced by a restored backup.</p>
+}

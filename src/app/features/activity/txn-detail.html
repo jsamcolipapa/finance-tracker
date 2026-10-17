@@ -1,0 +1,60 @@
+<app-back-link to="/activity" />
+
+@if (view(); as view) {
+  <p class="eyebrow">{{ eyebrow() }}</p>
+  <h1>{{ view.title }}</h1>
+  <div class="big-amount" [class]="view.tone">{{ view.amount }}</div>
+
+  <div class="detail-card">
+    @if (view.txn.kind === 'transfer') {
+      <div class="detail-row">
+        <span>From</span><strong>{{ from()?.name ?? 'Deleted account' }}</strong>
+      </div>
+      <div class="detail-row">
+        <span>To</span><strong>{{ to()?.name ?? 'Deleted account' }}</strong>
+      </div>
+      @if (received()) {
+        <div class="detail-row">
+          <span>Received</span><strong>{{ received() }}</strong>
+        </div>
+      }
+    } @else {
+      <div class="detail-row">
+        <span>Account</span><strong>{{ from()?.name ?? 'Deleted account' }}</strong>
+      </div>
+      @if (view.txn.category) {
+        <div class="detail-row">
+          <span>{{ view.txn.kind === 'income' ? 'Source' : 'Category' }}</span>
+          <strong>{{ view.txn.category }}</strong>
+        </div>
+      }
+    }
+    <div class="detail-row">
+      <span>Date</span><strong>{{ longDate() }}</strong>
+    </div>
+    @if (view.txn.note) {
+      <div class="detail-row">
+        <span>Note</span><strong>{{ view.txn.note }}</strong>
+      </div>
+    }
+  </div>
+
+  @if (view.uncounted) {
+    <div class="info-panel">
+      <app-icon name="info" />
+      <span>
+        This is dated before the account's starting balance, so it doesn't change the balance.
+      </span>
+    </div>
+  }
+
+  <div class="actions">
+    <a class="btn secondary" [routerLink]="['/activity', view.txn.id, 'edit']">
+      <app-icon name="pencil" [size]="16" /> Edit transaction
+    </a>
+    <a class="btn secondary" routerLink="/activity">Back to activity</a>
+  </div>
+} @else if (finance.loaded()) {
+  <h1>Transaction not found</h1>
+  <p class="subtitle">It may have been deleted, or replaced by a restored backup.</p>
+}

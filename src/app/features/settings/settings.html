@@ -1,0 +1,61 @@
+<app-brandline />
+
+<div class="page-title">
+  <p class="eyebrow">YOUR DATA</p>
+  <h1>Settings &amp; backup</h1>
+  <p class="subtitle">Your records are stored on this device.</p>
+</div>
+
+<div class="check-card">
+  @if (status.offlineReady()) {
+    <app-icon name="shield-check" [size]="24" />
+    <strong>Ready for offline use</strong>
+    <small>Accounts and transactions stay available without an internet connection.</small>
+  } @else {
+    <app-icon name="wifi-off" [size]="24" />
+    <strong>Saved on this device</strong>
+    <small>
+      Offline use turns on once the app has finished installing. Open it from your Home Screen while
+      online once.
+    </small>
+  }
+  @if (persisted() === false) {
+    <small>Storage isn't marked persistent yet, so keep regular backups.</small>
+  }
+</div>
+
+<h2>Backup</h2>
+<a class="settings-card" routerLink="/settings/export">
+  <app-icon name="download" />
+  <span>
+    <strong>Export backup</strong>
+    <small>Save a copy you can import later · last: {{ lastBackup ?? 'never' }}</small>
+  </span>
+  <app-icon class="chev" name="chevron-right" [size]="16" />
+</a>
+<a class="settings-card" routerLink="/settings/restore">
+  <app-icon name="upload" />
+  <span>
+    <strong>Restore backup</strong>
+    <small>Review a backup before replacing data</small>
+  </span>
+  <app-icon class="chev" name="chevron-right" [size]="16" />
+</a>
+
+<h2 style="margin-top: 26px">About</h2>
+<a class="settings-card" routerLink="/welcome">
+  <app-icon name="circle-help" />
+  <span>
+    <strong>View welcome setup</strong>
+    <small>See how tracking works</small>
+  </span>
+  <app-icon class="chev" name="chevron-right" [size]="16" />
+</a>
+
+<div class="info-panel">
+  <app-icon name="info" />
+  <span>
+    Local records don't sync automatically between devices. The Home Screen app and Safari also keep
+    separate data — use backups to move records.
+  </span>
+</div>

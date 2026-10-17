@@ -1,0 +1,114 @@
+<app-back-link
+  [to]="id() ? ['/activity', id()] : account() ? ['/accounts', account()] : '/activity'"
+/>
+
+@if (notFound()) {
+  <h1>Transaction not found</h1>
+  <p class="subtitle">It may have been deleted, or replaced by a restored backup.</p>
+} @else if (accountOptions().length === 0 && finance.loaded()) {
+  <p class="eyebrow">NEW ENTRY</p>
+  <h1>Record transaction</h1>
+  <p class="subtitle">Add an account first, then record money moving in and out of it.</p>
+  <div class="actions"><a class="btn" routerLink="/accounts/new">Add an account</a></div>
+} @else {
+  @if (id()) {
+    <div class="page-title">
+      <p class="eyebrow">{{ kindLabels[kind()].toUpperCase() }}</p>
+      <h1>Edit transaction</h1>
+    </div>
+  } @else {
+    <p class="eyebrow">NEW ENTRY</p>
+    <h1>Record transaction</h1>
+    <div class="segment" role="group" aria-label="Transaction type">
+      @for (k of kinds; track k) {
+        <button
+          type="button"
+          [class.on]="kind() === k"
+          [attr.aria-pressed]="kind() === k"
+          (click)="setKind(k)"
+        >
+          {{ kindLabels[k] }}
+        </button>
+      }
+    </div>
+  }
+
+  <form class="form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <label>
+      Amount{{ from() ? ' (' + symbol(from()!.currency) + ')' : '' }}
+      <input
+        class="input"
+        formControlName="amount"
+        inputmode="decimal"
+        placeholder="0.00"
+        autocomplete="off"
+      />
+    </label>
+
+    <label>
+      {{ kind() === 'transfer' ? 'From account' : 'Account' }}
+      <select class="input" formControlName="accountId" (change)="onFromChange()">
+        @for (a of accountOptions(); track a.id) {
+          <option [value]="a.id">{{ a.name }}</option>
+        }
+      </select>
+    </label>
+
+    @if (kind() === 'transfer') {
+      <label>
+        To account
+        <select class="input" formControlName="toAccountId">
+          @for (a of toOptions(); track a.id) {
+            <option [value]="a.id">{{ a.name }}</option>
+          } @empty {
+            <option value="" disabled>Add another account first</option>
+          }
+        </select>
+      </label>
+      @if (crossCurrency()) {
+        <label>
+          Amount received ({{ symbol(to()!.currency) }})
+          <input
+            class="input"
+            formControlName="toAmount"
+            inputmode="decimal"
+            placeholder="0.00"
+            autocomplete="off"
+          />
+          <span class="hint">
+            The accounts use different currencies, so enter what arrives in {{ to()!.name }}.
+          </span>
+        </label>
+      }
+    } @else {
+      <label>
+        {{ kind() === 'income' ? 'Source' : 'Category' }}
+        <select class="input" formControlName="category">
+          @for (c of categories(); track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+    }
+
+    <label>
+      Date
+      <input class="input" type="date" formControlName="date" />
+    </label>
+
+    <label>
+      Note
+      <input class="input" formControlName="note" placeholder="Optional note" maxlength="80" />
+    </label>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="saving()">
+      {{ id() ? 'Save changes' : 'Save ' + kindLabels[kind()].toLowerCase() }}
+    </button>
+    @if (id()) {
+      <button class="btn danger" type="button" (click)="remove()">Delete transaction</button>
+    }
+  </form>
+}

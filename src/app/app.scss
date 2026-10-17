@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+main {
+  max-width: 580px;
+  margin: 0 auto;
+  padding: calc(18px + env(safe-area-inset-top)) var(--gutter) 28px;
+
+  &.with-tabs {
+    padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 28px);
+  }
+}
+
+.update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--soft);
+  color: var(--deep);
+  font-size: 13px;
+}
+
+.tabs {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  padding: 9px 8px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+
+  a {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    min-width: 72px;
+    color: var(--muted);
+    font-size: 12px;
+
+    &.on {
+      color: var(--deep);
+      font-weight: 500;
+    }
+  }
+}
+
+/* Wide screens: navigation becomes a sidebar, like the mockup's web layout. */
+@media (min-width: 800px) {
+  .tabs {
+    inset: 0 auto 0 0;
+    width: var(--sidebar-w);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 32px 12px;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px;
+      border-radius: 9px;
+      font-size: 13px;
+
+      &.on {
+        background: var(--soft);
+      }
+    }
+  }
+
+  main {
+    padding-top: 36px;
+
+    &.with-tabs {
+      padding-left: calc(var(--sidebar-w) + 42px);
+      padding-right: 42px;
+      padding-bottom: 40px;
+      max-width: calc(var(--sidebar-w) + 660px);
+      margin: 0;
+    }
+  }
+}

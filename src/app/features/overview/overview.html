@@ -1,0 +1,78 @@
+<app-brandline />
+
+<div class="title-row">
+  <div>
+    <p class="eyebrow">{{ today }}</p>
+    <h1>Your money</h1>
+  </div>
+  <a class="icon-btn" routerLink="/settings" aria-label="Settings & backup">
+    <app-icon name="settings-2" />
+  </a>
+</div>
+
+@if (finance.loaded()) {
+  @for (total of finance.totals(); track total.currency) {
+    <div class="hero">
+      <span class="label">Total available · {{ total.currency }}</span>
+      <strong class="amount">{{ format(total.totalMinor, total.currency) }}</strong>
+      <span class="sub">
+        Across {{ total.accountCount }} {{ total.accountCount === 1 ? 'account' : 'accounts' }}
+      </span>
+    </div>
+  }
+
+  @if (needsBackup()) {
+    <div class="info-panel">
+      <app-icon name="triangle-alert" />
+      <span>
+        It's been a while since your last backup.
+        <a routerLink="/settings/export">Export one now</a>
+      </span>
+    </div>
+  }
+
+  <div class="section-head">
+    <h2>Accounts</h2>
+    <a class="link" routerLink="/accounts">See all ›</a>
+  </div>
+  @if (finance.activeAccounts().length) {
+    <div class="list">
+      @for (account of finance.activeAccounts(); track account.id) {
+        <a class="row" [routerLink]="['/accounts', account.id]">
+          <span class="row-icon"><app-icon [name]="accountIcons[account.type]" [size]="17" /></span>
+          <span class="row-copy">
+            <strong>{{ account.name }}</strong>
+            <small>{{ typeLabels[account.type] }} · {{ account.currency }}</small>
+          </span>
+          <span class="row-amount">
+            {{ format(finance.balances().get(account.id) ?? 0, account.currency) }}
+          </span>
+        </a>
+      }
+    </div>
+  } @else {
+    <div class="empty">
+      All accounts are archived. <a class="link" routerLink="/accounts/new">Add one</a>
+    </div>
+  }
+
+  <div class="section-head">
+    <h2>Recent activity</h2>
+    <a class="link" routerLink="/activity">See all ›</a>
+  </div>
+  @if (recent().length) {
+    <div class="list">
+      @for (view of recent(); track view.txn.id) {
+        <app-txn-row [view]="view" />
+      }
+    </div>
+  } @else {
+    <div class="empty">Nothing recorded yet. Your first transaction will show up here.</div>
+  }
+
+  @if (finance.activeAccounts().length) {
+    <a class="btn mt" routerLink="/activity/new">
+      <app-icon name="plus" [size]="16" /> Record transaction
+    </a>
+  }
+}

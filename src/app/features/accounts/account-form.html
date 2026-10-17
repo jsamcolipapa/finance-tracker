@@ -1,0 +1,104 @@
+<app-back-link [to]="id() ? ['/accounts', id()] : '/accounts'" />
+
+@if (notFound()) {
+  <div class="page-title">
+    <p class="eyebrow">YOUR ACCOUNTS</p>
+    <h1>Account not found</h1>
+    <p class="subtitle">It may have been deleted, or replaced by a restored backup.</p>
+  </div>
+} @else {
+  <div class="page-title">
+    <p class="eyebrow">YOUR ACCOUNTS</p>
+    <h1>{{ id() ? 'Edit account' : 'Add an account' }}</h1>
+    <p class="subtitle">
+      {{
+        id()
+          ? 'Update how this account appears in your tracker.'
+          : 'Enter the amount available when you start tracking.'
+      }}
+    </p>
+  </div>
+
+  <form class="form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <label>
+      Account name
+      <input
+        class="input"
+        formControlName="name"
+        placeholder="e.g. Travel fund"
+        autocomplete="off"
+      />
+    </label>
+
+    <div class="form-pair">
+      <label>
+        Type
+        <select class="input" formControlName="type">
+          @for (t of types; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Currency
+        @if (hasTxns()) {
+          <input class="input" [value]="form.controls.currency.value" readonly />
+        } @else {
+          <select class="input" formControlName="currency">
+            @for (c of currencies; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        }
+      </label>
+    </div>
+
+    <label>
+      Starting balance ({{ symbol() }})
+      <input
+        class="input"
+        formControlName="startingBalance"
+        inputmode="decimal"
+        placeholder="0.00"
+        autocomplete="off"
+      />
+      @if (form.controls.type.value === 'credit') {
+        <span class="hint">Enter money owed with a minus sign, like −250.00.</span>
+      }
+    </label>
+
+    <label>
+      Balance as of
+      <input class="input" type="date" formControlName="balanceDate" />
+    </label>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <button class="btn" type="submit" [disabled]="saving()">
+      {{ id() ? 'Save changes' : 'Save account' }}
+    </button>
+
+    @if (account(); as account) {
+      <button class="btn secondary" type="button" (click)="toggleArchived()">
+        {{ account.archived ? 'Unarchive account' : 'Archive account' }}
+      </button>
+      @if (!hasTxns()) {
+        <button class="btn danger" type="button" (click)="remove()">Delete account</button>
+      }
+    }
+  </form>
+
+  <div class="info-panel">
+    @if (id()) {
+      <app-icon name="info" />
+      <span
+        >Currency stays fixed once transactions exist. Archived accounts remain in past
+        activity.</span
+      >
+    } @else {
+      <app-icon name="lock-keyhole" />
+      <span>The account and its starting balance are saved on this device only.</span>
+    }
+  </div>
+}

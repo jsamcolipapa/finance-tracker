@@ -1,0 +1,52 @@
+<app-brandline />
+
+<div class="title-row">
+  <div>
+    <p class="eyebrow">{{ accountName()?.toUpperCase() ?? 'ALL ACCOUNTS' }}</p>
+    <h1>Activity</h1>
+  </div>
+  <a
+    class="icon-btn"
+    routerLink="/activity/new"
+    [queryParams]="{ account: account() }"
+    aria-label="Record transaction"
+  >
+    <app-icon name="plus" />
+  </a>
+</div>
+
+<div class="filter" role="group" aria-label="Filter by type">
+  @for (f of filters; track f.label) {
+    <button
+      type="button"
+      [class.on]="filter() === f"
+      [attr.aria-pressed]="filter() === f"
+      (click)="filter.set(f)"
+    >
+      {{ f.label }}
+    </button>
+  }
+  @if (account()) {
+    <a routerLink="/activity">All accounts ×</a>
+  }
+</div>
+
+@if (finance.loaded()) {
+  @for (month of months(); track month.label) {
+    <div class="date-label">{{ month.label }}</div>
+    <div class="list">
+      @for (view of month.views; track view.txn.id) {
+        <app-txn-row [view]="view" />
+      }
+    </div>
+  } @empty {
+    <div class="empty mt">
+      {{ filter().kind ? 'Nothing matches this filter.' : 'Nothing recorded yet.' }}
+    </div>
+  }
+}
+
+<div class="info-panel">
+  <app-icon name="arrow-right-left" />
+  <span>Transfers move money between accounts without changing the combined total.</span>
+</div>

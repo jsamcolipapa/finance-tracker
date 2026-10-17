@@ -1,0 +1,55 @@
+<app-brandline />
+
+<div class="title-row page-title">
+  <div>
+    <p class="eyebrow">YOUR ACCOUNTS</p>
+    <h1>Accounts</h1>
+  </div>
+  <a class="icon-btn" routerLink="/accounts/new" aria-label="Add account">
+    <app-icon name="plus" />
+  </a>
+</div>
+
+@if (finance.loaded()) {
+  @for (account of finance.activeAccounts(); track account.id) {
+    @let balance = finance.balances().get(account.id) ?? 0;
+    <a class="account-card" [routerLink]="['/accounts', account.id]">
+      <span class="top">
+        <span class="row-icon"><app-icon [name]="accountIcons[account.type]" [size]="17" /></span>
+        <span>
+          <span class="name">{{ account.name }}</span>
+          <span class="type">{{ typeLabels[account.type] }} · {{ account.currency }}</span>
+        </span>
+      </span>
+      <strong class="amount">{{ format(balance, account.currency) }}</strong>
+      <small>{{ balance < 0 ? 'Owed' : 'Available now' }}</small>
+    </a>
+  } @empty {
+    <div class="empty">No accounts yet.</div>
+  }
+
+  <a class="btn mt" routerLink="/accounts/new"><app-icon name="plus" [size]="16" /> Add account</a>
+
+  @if (archived().length) {
+    <div class="section-head"><h2>Archived</h2></div>
+    <div class="list">
+      @for (account of archived(); track account.id) {
+        <a class="row" [routerLink]="['/accounts', account.id]">
+          <span class="row-icon"><app-icon name="archive" [size]="17" /></span>
+          <span class="row-copy">
+            <strong>{{ account.name }}</strong>
+            <small>{{ typeLabels[account.type] }} · {{ account.currency }}</small>
+          </span>
+          <span class="row-amount">
+            {{ format(finance.balances().get(account.id) ?? 0, account.currency) }}
+          </span>
+        </a>
+      }
+    </div>
+  }
+
+  <div class="info-panel">
+    <app-icon name="info" />
+    <span>Balances start with the amount you enter, then change as you record transactions.</span>
+  </div>
+}
