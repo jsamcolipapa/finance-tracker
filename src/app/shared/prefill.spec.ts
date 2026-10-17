@@ -38,9 +38,25 @@ describe('readPrefill', () => {
   });
 
   it('leaves out anything it does not recognise', () => {
-    expect(
-      read('type=refund&account=Old&to=Nope&category=Bogus&date=17/10/2026&amount=abc'),
-    ).toEqual({ save: false });
+    expect(read('type=refund&to=Nope&category=Bogus&date=17/10/2026&amount=abc')).toEqual({
+      save: false,
+    });
+  });
+
+  it('accepts from as another name for account', () => {
+    expect(read('type=transfer&from=gcash&to=BDO%20Savings')).toMatchObject({
+      accountId: 'a2',
+      toAccountId: 'a1',
+    });
+  });
+
+  it('reports accounts it cannot use instead of guessing', () => {
+    expect(read('from=Old&save=1').problem).toBe('No account named "Old".');
+    expect(read('type=transfer&from=GCash&to=Nope').problem).toBe('No account named "Nope".');
+    expect(read('type=transfer&from=GCash&to=gcash').problem).toBe(
+      'The From and To accounts are the same.',
+    );
+    expect(read('type=expense&from=GCash&to=Nope').problem).toBeUndefined();
   });
 });
 

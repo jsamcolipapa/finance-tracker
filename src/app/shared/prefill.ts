@@ -3,8 +3,9 @@ import { categoriesFor } from './categories';
 
 /**
  * A new transaction described by a link, so an iOS Shortcut (or anything else) can record one:
- * `/activity/new?type=transfer&amount=5000&account=BDO&to=GCash&note=Rent&save=1`.
- * Accounts and categories match by name, ignoring case. Anything unrecognised is left out.
+ * `/activity/new?type=transfer&amount=5000&from=BDO&to=GCash&note=Rent&save=1`.
+ * Accounts and categories match by name, ignoring case. Anything else unrecognised is left out,
+ * but a named account that can't be used is a `problem`, so it's never swapped for another.
  */
 export interface Prefill {
   kind?: TxnKind;
@@ -16,6 +17,8 @@ export interface Prefill {
   note?: string;
   /** Save straight away instead of waiting for the Save button. */
   save: boolean;
+  /** Why the link can't be saved as is, e.g. an account name that matches nothing. */
+  problem?: string;
 }
 
 type Params = { get(key: string): string | null };
@@ -38,19 +41,32 @@ export function readPrefill(params: Params, accounts: Account[]): Prefill {
   const kind = type && KINDS.includes(type) ? type : undefined;
   const category = text('category')?.toLowerCase();
   const date = text('date');
+  const fromRef = text('from') ?? text('account');
+  const toRef = kind === 'transfer' ? text('to') : undefined;
+  const from = findAccount(accounts, fromRef);
+  const to = findAccount(accounts, toRef);
+  const problem =
+    fromRef && !from
+      ? `No account named "${fromRef}".`
+      : toRef && !to
+        ? `No account named "${toRef}".`
+        : from && to && from.id === to.id
+          ? 'The From and To accounts are the same.'
+          : undefined;
 
   return {
     kind,
     // Keep digits, separators and the decimal point, so "PHP 5,000.00" or "₱5,000" both work.
     amount: text('amount')?.replace(/[^\d.,]/g, '') || undefined,
-    accountId: findAccount(accounts, text('account'))?.id,
-    toAccountId: findAccount(accounts, text('to'))?.id,
+    accountId: from?.id,
+    toAccountId: to?.id,
     category: category
       ? categoriesFor(kind ?? 'expense').find((c) => c.name.toLowerCase() === category)?.name
       : undefined,
     date: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined,
     note: text('note')?.slice(0, 80),
     save: ['1', 'true', 'yes'].includes(text('save')?.toLowerCase() ?? ''),
+    ...(problem && { problem }),
   };
 }
 

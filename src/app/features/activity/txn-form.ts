@@ -147,7 +147,8 @@ export class TxnForm {
       ...(date && { date }),
       ...(note && { note }),
     });
-    if (p.save) void this.save({ replaceUrl: true });
+    if (p.problem) this.error.set(p.problem);
+    else if (p.save) void this.save({ replaceUrl: true });
   }
 
   /** Reads a Stillwater link a Shortcut copied, for the Home Screen app that links can't open. */

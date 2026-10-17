@@ -26,21 +26,21 @@ Amounts are stored as integers in each currency's smallest unit, such as cents. 
 A link to `/activity/new` can fill in a transaction:
 
 ```
-https://jsamcolipapa.github.io/finance-tracker/activity/new?type=transfer&amount=5000&account=BDO%20Savings&to=GCash&note=Rent&save=1
+https://jsamcolipapa.github.io/finance-tracker/activity/new?type=transfer&amount=5000&from=BDO%20Savings&to=GCash&note=Rent&save=1
 ```
 
-| Parameter  | Value                                                                        |
-| ---------- | ---------------------------------------------------------------------------- |
-| `type`     | `expense` (default), `income`, or `transfer`                                 |
-| `amount`   | e.g. `5000` or `PHP 5,000.00`; currency symbols are ignored                  |
-| `account`  | Account name (case doesn't matter) or id. The "from" account for a transfer. |
-| `to`       | Transfers only: the receiving account's name                                 |
-| `category` | A category or income source name, e.g. `Transport`                           |
-| `date`     | `YYYY-MM-DD` (default today)                                                 |
-| `note`     | Up to 80 characters                                                          |
-| `save`     | `1` to save immediately; leave it out to review first                        |
+| Parameter  | Value                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `type`     | `expense` (default), `income`, or `transfer`                                                                  |
+| `amount`   | e.g. `5000` or `PHP 5,000.00`; currency symbols are ignored                                                   |
+| `from`     | Account name (case doesn't matter) or id; `account` also works. For a transfer, the account the money leaves. |
+| `to`       | Transfers only: the receiving account's name                                                                  |
+| `category` | A category or income source name, e.g. `Transport`                                                            |
+| `date`     | `YYYY-MM-DD` (default today)                                                                                  |
+| `note`     | Up to 80 characters                                                                                           |
+| `save`     | `1` to save immediately; leave it out to review first                                                         |
 
-Anything Stillwater doesn't recognise is ignored and left at its default. If a saved link is missing something it needs, the form stays open and shows the error.
+Anything else Stillwater doesn't recognise is ignored and left at its default. If an account name doesn't match, From and To are the same, or something required is missing, the form stays open with the error instead of saving.
 
 Links from Shortcuts open in Safari, not in the Home Screen app, and the two keep separate storage. If you use the Home Screen app, have the Shortcut **Copy to Clipboard** the link instead. Then open Stillwater, go to **Record transaction**, and tap **Paste from Shortcut**.
 
