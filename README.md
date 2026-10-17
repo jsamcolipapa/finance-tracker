@@ -21,6 +21,29 @@ Amounts are stored as integers in each currency's smallest unit, such as cents. 
 3. Open Stillwater from the Home Screen and **set up your accounts there**. The Home Screen app and Safari keep separate storage.
 4. To check offline support, turn on airplane mode, reopen the app, and record a transaction.
 
+### Recording from iOS Shortcuts
+
+A link to `/activity/new` can fill in a transaction:
+
+```
+https://jsamcolipapa.github.io/finance-tracker/activity/new?type=transfer&amount=5000&account=BDO%20Savings&to=GCash&note=Rent&save=1
+```
+
+| Parameter  | Value                                                                        |
+| ---------- | ---------------------------------------------------------------------------- |
+| `type`     | `expense` (default), `income`, or `transfer`                                 |
+| `amount`   | e.g. `5000` or `PHP 5,000.00`; currency symbols are ignored                  |
+| `account`  | Account name (case doesn't matter) or id. The "from" account for a transfer. |
+| `to`       | Transfers only: the receiving account's name                                 |
+| `category` | A category or income source name, e.g. `Transport`                           |
+| `date`     | `YYYY-MM-DD` (default today)                                                 |
+| `note`     | Up to 80 characters                                                          |
+| `save`     | `1` to save immediately; leave it out to review first                        |
+
+Anything Stillwater doesn't recognise is ignored and left at its default. If a saved link is missing something it needs, the form stays open and shows the error.
+
+Links from Shortcuts open in Safari, not in the Home Screen app, and the two keep separate storage. If you use the Home Screen app, have the Shortcut **Copy to Clipboard** the link instead. Then open Stillwater, go to **Record transaction**, and tap **Paste from Shortcut**.
+
 ### Backups
 
 iOS can clear browser storage, so export a backup regularly from **Settings & backup → Export backup**. The share sheet lets you save the file to Files. To move to another device, restore that file there. Restoring replaces all data on that device.

@@ -1,5 +1,5 @@
 <app-back-link
-  [to]="id() ? ['/activity', id()] : account() ? ['/accounts', account()] : '/activity'"
+  [to]="id() ? ['/activity', id()] : accountRef() ? ['/accounts', accountRef()] : '/activity'"
 />
 
 @if (notFound()) {
@@ -17,7 +17,10 @@
       <h1>Edit transaction</h1>
     </div>
   } @else {
-    <p class="eyebrow">NEW ENTRY</p>
+    <div class="section-head">
+      <p class="eyebrow">NEW ENTRY</p>
+      <button type="button" class="link" (click)="pasteFromShortcut()">Paste from Shortcut</button>
+    </div>
     <h1>Record transaction</h1>
     <div class="segment" role="group" aria-label="Transaction type">
       @for (k of kinds; track k) {
